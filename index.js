@@ -39,6 +39,74 @@ for (let i = 0; i < parts.length; i++) {
   }
 }
 
+for (let i = 0; i < parts.length; i++) {
+  if (i % 2 === 0) {
+    if (parts[i].includes(markers[1])) {
+      const monospaceParts = parts[i].split(markers[1]);
+      if (monospaceParts.length < 3) {
+        throw new Error('Invalid markdown syntax');
+      }
+      for (let j = 0; j < monospaceParts.length; j++) {
+        if (j % 2 === 0) {
+          continue;
+        } else {
+          if (
+            monospaceParts[j].includes(markers[0]) ||
+            monospaceParts[j].includes(markers[2])
+          ) {
+            throw new Error('Invalid markdown syntax');
+          }
+          monospaceParts[j] = `<tt>${monospaceParts[j]}</tt>`;
+        }
+      }
+      parts[i] = monospaceParts.join('');
+    }
+  } else {
+    continue;
+  }
+}
+
+for (let i = 0; i < parts.length; i++) {
+  if (i % 2 === 0) {
+    if (parts[i].includes(markers[2])) {
+      const italicParts = parts[i].split(markers[2]);
+      if (italicParts.length < 3) {
+        throw new Error('Invalid markdown syntax');
+      }
+      for (let j = 0; j < italicParts.length; j++) {
+        if (j % 2 === 0) {
+          continue;
+        } else {
+          if (
+            italicParts[j].includes(markers[0]) ||
+            italicParts[j].includes(markers[1])
+          ) {
+            throw new Error('Invalid markdown syntax');
+          }
+          italicParts[j] = `<i>${italicParts[j]}</i>`;
+        }
+      }
+      parts[i] = italicParts.join('');
+    }
+  } else {
+    continue;
+  }
+}
+
+for (let i = 0; i < parts.length; i++) {
+  if (i % 2 === 0) {
+    if (parts[i].includes(markers[3])) {
+      const italicParts = parts[i].split(markers[3]);
+      for (let j = 0; j < italicParts.length; j++) {
+        italicParts[j] = `<p>${italicParts[j].trim()}</p>`;
+      }
+      parts[i] = italicParts.join('\n');
+    }
+  } else {
+    continue;
+  }
+}
+
 console.log(parts);
 
 // const boldText = /\*\*(.*)\*\*/g;
