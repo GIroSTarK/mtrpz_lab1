@@ -17,6 +17,9 @@ for (let i = 0; i < parts.length; i++) {
     if (boldParts) {
       boldParts.forEach(part => {
         const content = part.slice(2, -2);
+        if (content.includes(markers[0]) || content.includes(markers[1]) || content.includes(markers[2])) {
+          throw new Error('Nested markers are not allowed');
+        }
         parts[i] = parts[i].replace(part, `<b>${content}</b>`);
       });
     }
@@ -29,6 +32,9 @@ for (let i = 0; i < parts.length; i++) {
     if (monospaceParts) {
       monospaceParts.forEach(part => {
         const content = part.slice(1, -1);
+        if (content.includes(markers[0]) || content.includes(markers[1]) || content.includes(markers[2])) {
+          throw new Error('Nested markers are not allowed');
+        }
         parts[i] = parts[i].replace(part, `<tt>${content}</tt>`);
       });
     }
@@ -41,6 +47,9 @@ for (let i = 0; i < parts.length; i++) {
     if (italicParts) {
       italicParts.forEach(part => {
         const content = part.slice(1, -1);
+        if (content.includes(markers[0]) || content.includes(markers[1]) || content.includes(markers[2])) {
+          throw new Error('Nested markers are not allowed');
+        }
         parts[i] = parts[i].replace(part, `<i>${content}</i>`);
       });
     }
