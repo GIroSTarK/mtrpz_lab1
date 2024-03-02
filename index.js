@@ -34,8 +34,6 @@ for (let i = 0; i < parts.length; i++) {
       }
       parts[i] = boldParts.join('');
     }
-  } else {
-    continue;
   }
 }
 
@@ -61,8 +59,6 @@ for (let i = 0; i < parts.length; i++) {
       }
       parts[i] = monospaceParts.join('');
     }
-  } else {
-    continue;
   }
 }
 
@@ -88,22 +84,23 @@ for (let i = 0; i < parts.length; i++) {
       }
       parts[i] = italicParts.join('');
     }
-  } else {
-    continue;
   }
 }
 
 for (let i = 0; i < parts.length; i++) {
   if (i % 2 === 0) {
     if (parts[i].includes(markers[3])) {
-      const italicParts = parts[i].split(markers[3]);
-      for (let j = 0; j < italicParts.length; j++) {
-        italicParts[j] = `<p>${italicParts[j].trim()}</p>`;
+      const paragraphs = parts[i].split(markers[3]);
+      for (let j = 0; j < paragraphs.length; j++) {
+        paragraphs[j] = `<p>${paragraphs[j].trim()}</p>`;
       }
-      parts[i] = italicParts.join('\n');
+      parts[i] = paragraphs.join('\n');
     }
   } else {
-    continue;
+    if (!parts[i].startsWith('\n')) {
+      throw new Error('Should be line break after preformatted marker');
+    }
+    parts[i] = `\n<pre>${parts[i]}</pre>`;
   }
 }
 
