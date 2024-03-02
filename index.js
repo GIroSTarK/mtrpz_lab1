@@ -8,53 +8,37 @@ if (!filePath) {
 }
 
 const md = await fs.readFile(filePath, 'utf-8');
-const markers = ['**', '`', '_', '\n\n'];
+const markers = ['**', '_', '`', '\n\n'];
 const parts = md.split('```');
 
-for (let i = 0; i < parts.length; i++) {
-  if (i % 2 === 0) {
-    const boldParts = parts[i].match(/(\*\*[^*]+\*\*)/g);
-    if (boldParts) {
-      boldParts.forEach(part => {
-        const content = part.slice(2, -2);
-        if (content.includes(markers[0]) || content.includes(markers[1]) || content.includes(markers[2])) {
-          throw new Error('Nested markers are not allowed');
-        }
-        parts[i] = parts[i].replace(part, `<b>${content}</b>`);
-      });
+const boldRegex = /(\*\*[^*]+\*\*)/g;
+const italicRegex = /(_[^_]+_)/g;
+const monospacedRegex = /(`[^`]+`)/g;
+
+function convert(regex, marker, tag) {
+  for (let i = 0; i < parts.length; i++) {
+    if (i % 2 === 0) {
+      const markedParts = parts[i].match(regex);
+      if (markedParts) {
+        markedParts.forEach((part) => {
+          const content = part.slice(marker.length, -marker.length);
+          if (
+            content.includes(markers[0]) ||
+            content.includes(markers[1]) ||
+            content.includes(markers[2])
+          ) {
+            throw new Error('Nested markers are not allowed');
+          }
+          parts[i] = parts[i].replace(part, `<${tag}>${content}</${tag}>`);
+        });
+      }
     }
   }
 }
 
-for (let i = 0; i < parts.length; i++) {
-  if (i % 2 === 0) {
-    const monospaceParts = parts[i].match(/(`[^`]+`)/g);
-    if (monospaceParts) {
-      monospaceParts.forEach(part => {
-        const content = part.slice(1, -1);
-        if (content.includes(markers[0]) || content.includes(markers[1]) || content.includes(markers[2])) {
-          throw new Error('Nested markers are not allowed');
-        }
-        parts[i] = parts[i].replace(part, `<tt>${content}</tt>`);
-      });
-    }
-  }
-}
-
-for (let i = 0; i < parts.length; i++) {
-  if (i % 2 === 0) {
-    const italicParts = parts[i].match(/(_[^_]+_)/g);
-    if (italicParts) {
-      italicParts.forEach(part => {
-        const content = part.slice(1, -1);
-        if (content.includes(markers[0]) || content.includes(markers[1]) || content.includes(markers[2])) {
-          throw new Error('Nested markers are not allowed');
-        }
-        parts[i] = parts[i].replace(part, `<i>${content}</i>`);
-      });
-    }
-  }
-}
+convert(boldRegex, markers[0], 'b');
+convert(italicRegex, markers[1], 'i');
+convert(monospacedRegex, markers[2], 'tt');
 
 for (let i = 0; i < parts.length; i++) {
   if (i % 2 === 0) {
