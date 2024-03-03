@@ -1,12 +1,12 @@
 {
-  "name": "lab1",
+  "name": "html-parser",
   "version": "1.0.0",
-  "description": "",
+  "description": "A program that can convert md syntax to html",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Illya Katynskyi",
   "license": "ISC"
 }
