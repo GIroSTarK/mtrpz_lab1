@@ -11,9 +11,9 @@ const md = await fs.readFile(filePath, 'utf-8');
 const markers = ['**', '_', '`', '\n\n'];
 const parts = md.split('```');
 
-const boldRegex = /(?<=[^\w])\*\*([^*\s][^*]*[^*\s]*)\*\*(?=[^\w])/g;
-const italicRegex = /(?<=[^\w])_([^_\s][^_]*[^_\s]*)_(?=[^\w])/g;
-const monospacedRegex = /(?<=[^\w])`([^`\s][^`]*[^`\s]*)`(?=[^\w])/g;
+const boldRegex = /(?<=[\s,.])\*\*([^*\s][^*]*[^*\s]*)\*\*(?=[\s,.])/g;
+const italicRegex = /(?<=[\s,.])_([^_\s][^_]*[^_\s]*)_(?=[\s,.])/g;
+const monospacedRegex = /(?<=[\s,.])`([^`\s][^`]*[^`\s]*)`(?=[\s,.])/g;
 
 function convert(regex, marker, tag) {
   for (let i = 0; i < parts.length; i++) {
