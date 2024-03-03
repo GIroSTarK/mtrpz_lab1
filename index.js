@@ -11,9 +11,9 @@ const md = await fs.readFile(filePath, 'utf-8');
 const markers = ['**', '_', '`', '\n\n'];
 const parts = md.split('```');
 
-const boldRegex = /(\*\*[^*]+\*\*)/g;
-const italicRegex = /(_[^_]+_)/g;
-const monospacedRegex = /(`[^`]+`)/g;
+const boldRegex = /(?<=[\s,.])\*\*([^*\s][^*]*[^*\s]*)\*\*(?=[\s,.])/g;
+const italicRegex = /(?<=[\s,.])_([^_\s][^_]*[^_\s]*)_(?=[\s,.])/g;
+const monospacedRegex = /(?<=[\s,.])`([^`\s][^`]*[^`\s]*)`(?=[\s,.])/g;
 
 function convert(regex, marker, tag) {
   for (let i = 0; i < parts.length; i++) {
@@ -22,10 +22,15 @@ function convert(regex, marker, tag) {
       if (markedParts) {
         markedParts.forEach((part) => {
           const content = part.slice(marker.length, -marker.length);
+          if (content.endsWith(' ')) {
+            throw new Error('Invalid markdown syntax');
+          }
+          const nestedMarksCount = (marker) =>
+            content.split('').filter((char) => char === marker).length;
           if (
-            content.includes(markers[0]) ||
-            content.includes(markers[1]) ||
-            content.includes(markers[2])
+            nestedMarksCount('*') > 3 ||
+            nestedMarksCount(markers[1]) > 1 ||
+            nestedMarksCount(markers[2]) > 1
           ) {
             throw new Error('Nested markers are not allowed');
           }
