@@ -31,3 +31,5 @@ node index.js <шлях до вашого md файлу> --out <шлях до ht
 
 ## Вказання на revert-коміт
 Revert-коміт має хеш 0b585c2bf4ad59d6eb761b7a0cc301761c5ed4f4
+
+![image](https://github.com/GIroSTarK/mtrpz_lab1/assets/122596697/920e9415-85fb-4ecc-b6f2-187dcbe836d5)
