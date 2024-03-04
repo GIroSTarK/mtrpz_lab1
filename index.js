@@ -10,10 +10,13 @@ if (!filePath) {
 const md = await fs.readFile(filePath, 'utf-8');
 const markers = ['**', '_', '`', '\n\n'];
 const parts = md.split('```');
+if (parts.length % 2 === 0) {
+  throw new Error('Invalid markdown syntax');
+}
 
-const boldRegex = /(?<=[\s,.])\*\*([^*\s][^*]*[^*\s]*)\*\*(?=[\s,.])/g;
-const italicRegex = /(?<=[\s,.])_([^_\s][^_]*[^_\s]*)_(?=[\s,.])/g;
-const monospacedRegex = /(?<=[\s,.])`([^`\s][^`]*[^`\s]*)`(?=[\s,.])/g;
+const boldRegex = /(?<=^|[\s,.\n])\*\*([^*\s][^*]*[^*\s]*)\*\*(?=[\s,.\n]|$)/g;
+const italicRegex = /(?<=^|[\s,.\n])_([^_\s][^_]*[^_\s]*)_(?=[\s,.\n]|$)/g;
+const monospacedRegex = /(?<=^|[\s,.\n])`([^`\s][^`]*[^`\s]*)`(?=[\s,.\n]|$)/g;
 
 function convert(regex, marker, tag) {
   for (let i = 0; i < parts.length; i++) {
