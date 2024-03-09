@@ -14,9 +14,9 @@ if (parts.length % 2 === 0) {
   throw new Error('Invalid markdown syntax');
 }
 
-const boldRegex = /(?<=^|[\s,.\n])\*\*([^*\s][^*]*[^*\s]*)\*\*(?=[\s,.\n]|$)/g;
-const italicRegex = /(?<=^|[\s,.\n])_([^_\s][^_]*[^_\s]*)_(?=[\s,.\n]|$)/g;
-const monospacedRegex = /(?<=^|[\s,.\n])`([^`\s][^`]*[^`\s]*)`(?=[\s,.\n]|$)/g;
+const boldRegex = /(?<=[ ,.:;\n\t]|^)\*\*(?=\S)(.+?)(?<=\S)\*\*(?=[ ,.:;\n\t]|$)/g;
+const italicRegex = /(?<=[ ,.:;\n\t]|^)_(?=\S)(.+?)(?<=\S)_(?=[ ,.:;\n\t]|$)/g;
+const monospacedRegex = /(?<=[ ,.:;\n\t]|^)`(?=\S)(.+?)(?=\S)`(?=[ ,.:;\n\t]|$)/g;
 
 function convert(regex, marker, tag) {
   for (let i = 0; i < parts.length; i++) {
