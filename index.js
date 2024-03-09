@@ -25,9 +25,6 @@ function convert(regex, marker, tag) {
       if (markedParts) {
         markedParts.forEach((part) => {
           const content = part.slice(marker.length, -marker.length);
-          if (content.endsWith(' ')) {
-            throw new Error('Invalid markdown syntax');
-          }
           const nestedMarksCount = (marker) =>
             content.split('').filter((char) => char === marker).length;
           if (
