@@ -14,13 +14,26 @@ if (parts.length % 2 === 0) {
   throw new Error('Invalid markdown syntax');
 }
 
-const boldRegex = /(?<=[ ,.:;\n\t]|^)\*\*(?=\S)(.+?)(?<=\S)\*\*(?=[ ,.:;\n\t]|$)/g;
+const boldRegex =
+  /(?<=[ ,.:;\n\t]|^)\*\*(?=\S)(.+?)(?<=\S)\*\*(?=[ ,.:;\n\t]|$)/g;
 const italicRegex = /(?<=[ ,.:;\n\t]|^)_(?=\S)(.+?)(?<=\S)_(?=[ ,.:;\n\t]|$)/g;
-const monospacedRegex = /(?<=[ ,.:;\n\t]|^)`(?=\S)(.+?)(?=\S)`(?=[ ,.:;\n\t]|$)/g;
+const monospacedRegex =
+  /(?<=[ ,.:;\n\t]|^)`(?=\S)(.+?)(?=\S)`(?=[ ,.:;\n\t]|$)/g;
+
+const errorBold = /(?<=[ ,.:;\n\t]|^)\*\*(?=\S)(.+?)(?<=\S)[^(\*\*)]$/g;
+const errorItalic = /(?<=[ ,.:;\n\t]|^)_(?=\S)(.+?)(?<=\S)[^_]$/g;
+const errorMonospaced = /(?<=[ ,.:;\n\t]|^)`(?=\S)(.+?)(?=\S)[^`]$/g;
 
 function convert(regex, marker, tag) {
   for (let i = 0; i < parts.length; i++) {
     if (i % 2 === 0) {
+      if (
+        parts[i].match(errorBold) ||
+        parts[i].match(errorItalic) ||
+        parts[i].match(errorMonospaced)
+      ) {
+        throw new Error('No closing marker provided');
+      }
       const markedParts = parts[i].match(regex);
       if (markedParts) {
         markedParts.forEach((part) => {
