@@ -20,9 +20,9 @@ const italicRegex = /(?<=[ ,.:;\n\t]|^)_(?=\S)(.+?)(?<=\S)_(?=[ ,.:;\n\t]|$)/g;
 const monospacedRegex =
   /(?<=[ ,.:;\n\t]|^)`(?=\S)(.+?)(?=\S)`(?=[ ,.:;\n\t]|$)/g;
 
-const errorBold = /(?<=[ ,.:;\n\t]|^)\*\*(?=\S)(.+?)(?<=\S)[^(\*\*)]$/g;
-const errorItalic = /(?<=[ ,.:;\n\t]|^)_(?=\S)(.+?)(?<=\S)[^_]$/g;
-const errorMonospaced = /(?<=[ ,.:;\n\t]|^)`(?=\S)(.+?)(?=\S)[^`]$/g;
+const errorBold = /(?<=[ ,.:;\n\t]|^)\*\*(?=\S)(.+?)[^(\*\*)]$/g;
+const errorItalic = /(?<=[ ,.:;\n\t]|^)_(?=\S)(.+?)[^_]$/g;
+const errorMonospaced = /(?<=[ ,.:;\n\t]|^)`(?=\S)(.+?)[^`]$/g;
 
 function convert(regex, marker, tag) {
   for (let i = 0; i < parts.length; i++) {
