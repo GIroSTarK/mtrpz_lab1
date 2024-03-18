@@ -4,6 +4,10 @@ import path from 'path';
 const filePath = process.argv[2];
 const outputFlag = process.argv.indexOf('--out');
 
+if (!filePath) {
+  throw new Error('No file path provided');
+}
+
 const boldRegex =
   /(?<=[ ,.:;\n\t]|^)\*\*(?=\S)(.+?)(?<=\S)\*\*(?=[ ,.:;\n\t]|$)/g;
 const italicRegex = /(?<=[ ,.:;\n\t]|^)_(?=\S)(.+?)(?<=\S)_(?=[ ,.:;\n\t]|$)/g;
@@ -36,7 +40,7 @@ const setPreformattedParts = (text) => {
     throw new Error('Should be line break before last preformatted marker');
   }
 
-  return `<pre>${text}</pre>`;
+  return `<pre>${text}</pre>\n`;
 };
 
 const setHtmlTags = (text) => {
