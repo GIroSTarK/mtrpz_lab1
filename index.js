@@ -9,6 +9,14 @@ const boldRegex =
 const italicRegex = /(?<=[ ,.:;\n\t]|^)_(?=\S)(.+?)(?<=\S)_(?=[ ,.:;\n\t]|$)/g;
 const monospacedRegex =
   /(?<=[ ,.:;\n\t]|^)`(?=\S)(.+?)(?=\S)`(?=[ ,.:;\n\t]|$)/g;
+const regexps = [boldRegex, italicRegex, monospacedRegex];
+
+const leftBold = /(?<=[ ,.:;\n\t]|^)\*\*(?=\S)/g;
+const rightBold = /(?<=\S)\*\*(?=[ ,.:;\n\t]|$)/g;
+const leftItalic = /(?<=[ ,.:;\n\t]|^)_(?=\S)/g;
+const rightItalic = /(?<=\S)_(?=[ ,.:;\n\t]|$)/g;
+const leftMonospaced = /(?<=[ ,.:;\n\t]|^)`(?=\S)/g;
+const rightMonospaced = /(?=\S)`(?=[ ,.:;\n\t]|$)/g;
 
 const markers = ['**', '_', '`'];
 const md = await fs.readFile(filePath, 'utf-8');
@@ -36,6 +44,20 @@ const setHtmlTags = (text) => {
     .replace(boldRegex, '<b>$1</b>')
     .replace(italicRegex, '<i>$1</i>')
     .replace(monospacedRegex, '<tt>$1</tt>');
+};
+
+const isMarkerClosedChecker = (text, leftRegex, rightRegex, regex) => {
+  const matchedMarkers = text.match(regex);
+  const matchedLeftMarkers = text.match(leftRegex);
+  const matchedRightMarkers = text.match(rightRegex);
+
+  const markersLength = matchedMarkers ? matchedMarkers.length * 2 : 0;
+  const leftMarkersLength = matchedLeftMarkers ? matchedLeftMarkers.length : 0;
+  const rightMarkersLength = matchedRightMarkers ? matchedRightMarkers.length : 0;
+
+  if (leftMarkersLength + rightMarkersLength !== markersLength) {
+    throw new Error('There is no closing marker');
+  }
 };
 
 const nestedMarkersChecker = (text, regex, marker) => {
@@ -79,9 +101,17 @@ const markdownToHTML = () => {
 
   for (let i = 0; i < parts.length; i++) {
     if (i % 2 === 0) {
-      nestedMarkersChecker(parts[i], boldRegex, markers[0]);
-      nestedMarkersChecker(parts[i], italicRegex, markers[1]);
-      nestedMarkersChecker(parts[i], monospacedRegex, markers[2]);
+      isMarkerClosedChecker(parts[i], leftBold, rightBold, boldRegex);
+      isMarkerClosedChecker(parts[i], leftItalic, rightItalic, italicRegex);
+      isMarkerClosedChecker(
+        parts[i],
+        leftMonospaced,
+        rightMonospaced,
+        monospacedRegex
+      );
+      regexps.forEach((regex, index) =>
+        nestedMarkersChecker(parts[i], regex, markers[index])
+      );
       parts[i] = setHtmlTags(parts[i]);
       parts[i] = setParagraphs(parts[i]);
     } else {
