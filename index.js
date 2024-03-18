@@ -1,12 +1,9 @@
 import fs from 'fs/promises';
 import path from 'path';
+import os from 'node:os';
 
 const filePath = process.argv[2];
 const outputFlag = process.argv.indexOf('--out');
-
-if (!filePath) {
-  throw new Error('No file path provided');
-}
 
 const boldRegex =
   /(?<=[ ,.:;\n\t]|^)\*\*(?=\S)(.+?)(?<=\S)\*\*(?=[ ,.:;\n\t]|$)/g;
@@ -26,21 +23,21 @@ const markers = ['**', '_', '`'];
 const md = await fs.readFile(filePath, 'utf-8');
 
 const setParagraphs = (text) => {
-  const paragraphs = text.split('\n\n').filter((par) => par.trim() !== '');
-  const htmlParagraphs = paragraphs.map((par) => `<p>${par.trim()}</p>\n`);
+  const paragraphs = text.split(`${os.EOL}${os.EOL}`).filter((par) => par.trim() !== '');
+  const htmlParagraphs = paragraphs.map((par) => `<p>${par.trim()}</p>${os.EOL}`);
 
   return htmlParagraphs.join('');
 };
 
 const setPreformattedParts = (text) => {
-  if (!text.startsWith('\n')) {
+  if (!text.startsWith(`${os.EOL}`)) {
     throw new Error('Should be line break after preformatted marker');
   }
-  if (!text.endsWith('\n')) {
+  if (!text.endsWith(`${os.EOL}`)) {
     throw new Error('Should be line break before last preformatted marker');
   }
 
-  return `<pre>${text}</pre>\n`;
+  return `<pre>${text}</pre>${os.EOL}`;
 };
 
 const setHtmlTags = (text) => {
