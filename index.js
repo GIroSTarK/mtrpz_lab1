@@ -5,6 +5,10 @@ import os from 'node:os';
 const filePath = process.argv[2];
 const outputFlag = process.argv.indexOf('--out');
 
+if (!filePath) {
+  throw new Error('No file path provided');
+}
+
 const boldRegex =
   /(?<=[ ,.:;\n\t]|^)\*\*(?=\S)(.+?)(?<=\S)\*\*(?=[ ,.:;\n\t]|$)/g;
 const italicRegex = /(?<=[ ,.:;\n\t]|^)_(?=\S)(.+?)(?<=\S)_(?=[ ,.:;\n\t]|$)/g;
